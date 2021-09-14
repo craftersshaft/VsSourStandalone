@@ -267,6 +267,30 @@ class DistractionsAndEffectsOption extends Option
 	}
 }
 
+class CharaOption extends Option
+{
+	var numb:Int = 0;
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+	public override function press():Bool
+	{
+		numb++;
+		if (numb > 2) {numb = 0;};
+		var chararray = ['bf', 'pico', 'scampers'];
+		FlxG.save.data.char = chararray[numb];
+		display = updateDisplay();
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		return "Current Character " + FlxG.save.data.char;
+	}
+}
+
 class Colour extends Option
 {
 	public function new(desc:String)

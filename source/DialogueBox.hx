@@ -115,7 +115,12 @@ class DialogueBox extends FlxSpriteGroup
 				swagDialogue.setFormat(Paths.font("vcr.ttf"), 32);	
 			case 'tastetest':
 				hasDialog = true;
-				portraitLeft = new FlxSprite(148, 172).loadGraphic(Paths.image('weeb/sourPortrait'));
+				portraitLeft = new FlxSprite(148, 172);
+				portraitLeft.frames = Paths.getSparrowAtlas('weeb/sourPortrait');
+				portraitLeft.animation.addByPrefix('enter', 'enter', 24, false);
+				portraitLeft.animation.addByPrefix('ugh', 'ugh', 24, false);
+				portraitLeft.setGraphicSize(Std.int(portraitLeft.width));
+				portraitLeft.updateHitbox();
 				box.frames = Paths.getSparrowAtlas('weeb/pixelUI/dialogueBox-sour');
 				box.animation.addByPrefix('normalOpen', 'Text Box Appear', 24, false);
 				box.animation.addByIndices('normal', 'Text Box Appear', [4], "", 24);
@@ -124,7 +129,12 @@ class DialogueBox extends FlxSpriteGroup
 				swagDialogue.setFormat(Paths.font("vcr.ttf"), 32);	
 			case 'workit':
 				hasDialog = true;
-				portraitLeft = new FlxSprite(148, 172).loadGraphic(Paths.image('weeb/sourPortrait'));
+				portraitLeft = new FlxSprite(148, 172);
+				portraitLeft.frames = Paths.getSparrowAtlas('weeb/sourPortrait');
+				portraitLeft.animation.addByPrefix('enter', 'enter', 24, false);
+				portraitLeft.animation.addByPrefix('ugh', 'ugh', 24, false);
+				portraitLeft.setGraphicSize(Std.int(portraitLeft.width));
+				portraitLeft.updateHitbox();
 				box.frames = Paths.getSparrowAtlas('weeb/pixelUI/dialogueBox-sour');
 				box.animation.addByPrefix('normalOpen', 'Text Box Appear', 24, false);
 				box.animation.addByIndices('normal', 'Text Box Appear', [4], "", 24);
@@ -280,6 +290,15 @@ class DialogueBox extends FlxSpriteGroup
 					portraitLeft.visible = true;
 					portraitLeft.animation.play('enter');
 				}
+				swagDialogue.sounds = [FlxG.sound.load(Paths.sound('pixelText'), 0.6)];
+			case 'ugh':
+				portraitRight.visible = false;
+				if (!portraitLeft.visible)
+				{
+					portraitLeft.visible = true;
+				}
+				portraitLeft.animation.play('ugh');
+				swagDialogue.sounds = [FlxG.sound.load(Paths.sound('sourUgh'))];
 			case 'bf':
 				portraitLeft.visible = false;
 				if (!portraitRight.visible)
@@ -287,6 +306,7 @@ class DialogueBox extends FlxSpriteGroup
 					portraitRight.visible = true;
 					portraitRight.animation.play('enter');
 				}
+				swagDialogue.sounds = [FlxG.sound.load(Paths.sound('pixelText'), 0.6)];
 		}
 	}
 

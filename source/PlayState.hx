@@ -541,7 +541,8 @@ class PlayState extends MusicBeatState
 			#end
 			gf = new Character(770, 450, 'gf');
 		}
-
+		if (FlxG.save.data.char == "pico"){SONG.player1 = 'pico'; iconP1 = new HealthIcon('pico', true);};
+		if (FlxG.save.data.char == "scampers"){SONG.player1 = 'scampers'; iconP1 = new HealthIcon('scampers', true);};
 		boyfriend = new Boyfriend(770, 450, SONG.player1);
 
 		if (boyfriend.frames == null)
@@ -1539,13 +1540,21 @@ class PlayState extends MusicBeatState
 		curSong = songData.song;
 
 		#if sys
-		if (SONG.needsVoices && !isSM)
+		if (SONG.needsVoices && !isSM) {
+			if (FlxG.save.data.char == "pico") {
+			vocals = new FlxSound().loadEmbedded(Paths.picovoices(PlayState.SONG.song));
+			} else {
 			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+			}}
 		else
 			vocals = new FlxSound();
 		#else
-		if (SONG.needsVoices)
+		if (SONG.needsVoices) {
+			if (FlxG.save.data.char == "pico") {
+			vocals = new FlxSound().loadEmbedded(Paths.picovoices(PlayState.SONG.song));
+			} else {
 			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+			}}
 		else
 			vocals = new FlxSound();
 		#end
@@ -1575,9 +1584,12 @@ class PlayState extends MusicBeatState
 
 		FlxG.sound.music.onComplete = endSong;
 		FlxG.sound.music.pause();
-
-		if (SONG.needsVoices)
+		if (SONG.needsVoices) {
+			if (FlxG.save.data.char == "pico") {
+			FlxG.sound.cache(Paths.picovoices(PlayState.SONG.song));
+			} else {
 			FlxG.sound.cache(Paths.voices(PlayState.SONG.song));
+			}	};		
 		if (!PlayState.isSM)
 			FlxG.sound.cache(Paths.inst(PlayState.SONG.song));
 

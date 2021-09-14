@@ -105,6 +105,16 @@ class Paths
 			}
 		return 'songs:assets/songs/${songLowercase}/Voices.$SOUND_EXT';
 	}
+	
+	inline static public function picovoices(song:String)
+	{
+		var songLowercase = StringTools.replace(song, " ", "-").toLowerCase();
+			switch (songLowercase) {
+				case 'dad-battle': songLowercase = 'dadbattle';
+				case 'philly-nice': songLowercase = 'philly';
+			}
+		return 'songs:assets/songs/${songLowercase}/PicoVoices.$SOUND_EXT';
+	}
 
 	inline static public function inst(song:String)
 	{

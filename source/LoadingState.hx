@@ -69,6 +69,7 @@ class LoadingState extends MusicBeatState
 				if (PlayState.SONG.needsVoices)
 					checkLoadSong(getVocalPath());
 				trace("checking shared");
+				trace("This Week Was Made By craftersshaft, FNF Extraordinaire");
 				checkLibrary("shared");
 				trace("checking week1");
 				checkLibrary("week1");
