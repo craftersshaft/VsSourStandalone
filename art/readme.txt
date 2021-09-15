@@ -90,3 +90,8 @@ I love Tom Fulp.
                                                                                   
 ##################################################################################
 i stole this from stamper.
+
+MOD CREDITS:
+main new stuff made by craftersshaft.
+shoutouts to a cool person from /funkg/ for motivating me through the run of the original mod
+this mod can be played on kbhgames/hedgehogstew.today, for other hosting let me know through either twitter (@craftersshaft), newgrounds (craftersshaftstuff) or discord (craftersshaft#1800)

@@ -26,6 +26,7 @@ class LoadingState extends MusicBeatState
 	
 	var logo:FlxSprite;
 	var gfDance:FlxSprite;
+	var wait:FlxSprite;
 	var danceLeft = false;
 	var filesloaded = 0;
 	var filetext:FlxText;
@@ -55,8 +56,10 @@ class LoadingState extends MusicBeatState
 		gfDance.antialiasing = true;
 		filesloaded = 0;
 		filetext = new FlxText(0, 0, 0, "Files Loaded:");
-		add(gfDance);
+		wait = new FlxSprite(FlxG.width / 2 + 100, FlxG.height / 2).loadGraphic(Paths.image('stopwaitaminute'));
+		//add(gfDance);
 		add(logo);
+		add(wait);
 		add(filetext);
 		
 		initSongsManifest().onComplete
@@ -68,6 +71,9 @@ class LoadingState extends MusicBeatState
 				checkLoadSong(getSongPath());
 				if (PlayState.SONG.needsVoices)
 					checkLoadSong(getVocalPath());
+							filesloaded++;
+					checkLoadSong(getPicoVocalPath());
+							filesloaded++;
 				trace("checking shared");
 				trace("This Week Was Made By craftersshaft, FNF Extraordinaire");
 				checkLibrary("shared");
@@ -145,6 +151,11 @@ class LoadingState extends MusicBeatState
 	static function getVocalPath()
 	{
 		return Paths.voices(PlayState.SONG.song);
+	}
+	
+	static function getPicoVocalPath()
+	{
+		return Paths.picovoices(PlayState.SONG.song);
 	}
 	
 	inline static public function loadAndSwitchState(target:FlxState, stopMusic = false)
