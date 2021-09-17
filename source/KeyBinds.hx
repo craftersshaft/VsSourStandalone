@@ -21,10 +21,14 @@ class KeyBinds
         FlxG.save.data.leftBind = "A";
         FlxG.save.data.rightBind = "D";
         FlxG.save.data.killBind = "R";
+        FlxG.save.data.strumupBind = "Y";
+        FlxG.save.data.strumdownBind = "H";
         FlxG.save.data.gpupBind = "DPAD_UP";
         FlxG.save.data.gpdownBind = "DPAD_DOWN";
         FlxG.save.data.gpleftBind = "DPAD_LEFT";
         FlxG.save.data.gprightBind = "DPAD_RIGHT";
+        FlxG.save.data.gpstrumupBind = "DPAD_UP";
+        FlxG.save.data.gpstrumdownBind = "DPAD_DOWN";		
         PlayerSettings.player1.controls.loadKeyBinds();
 
 	}
@@ -39,6 +43,14 @@ class KeyBinds
             FlxG.save.data.downBind = "S";
             trace("No DOWN");
         }
+        if(FlxG.save.data.strumupBind == null){
+            FlxG.save.data.strumupBind = "Y";
+            trace("No STRUMUP");
+        }
+        if(FlxG.save.data.strumdownBind == null){
+            FlxG.save.data.strumdownBind = "H";
+            trace("No STRUMDOWN");
+        }		
         if(FlxG.save.data.leftBind == null){
             FlxG.save.data.leftBind = "A";
             trace("No LEFT");
@@ -68,8 +80,15 @@ class KeyBinds
             FlxG.save.data.killBind = "R";
             trace("No KILL");
         }
-
-        trace('${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}');
+        if(FlxG.save.data.gpstrumupBind == null){
+            FlxG.save.data.gpstrumupBind = "DPAD_UP";
+            trace("No GSTRUMUP");
+        }
+        if(FlxG.save.data.gpstrumdownBind == null){
+            FlxG.save.data.gpstrumdownBind = "DPAD_DOWN";
+            trace("No GSTRUMDOWN");
+        }
+        trace('${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}-${FlxG.save.data.strumupBind}-${FlxG.save.data.strumdownBind}');
     }
 
 }

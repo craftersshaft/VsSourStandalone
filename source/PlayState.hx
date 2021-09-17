@@ -1034,6 +1034,7 @@ class PlayState extends MusicBeatState
 			rep = new Replay("na");
 		trace("deef dish pizza " +FlxG.keys.preventDefaultKeys);
 		FlxG.keys.preventDefaultKeys = [];
+		trace("guitar hehe" +SONG.forGuitar);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, handleInput);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, releaseInput);
 		super.create();
@@ -1250,7 +1251,7 @@ class PlayState extends MusicBeatState
 		return null;
 	}
 
-	var keys = [false, false, false, false];
+	var keys = [false, false, false, false, false, false];
 
 	private function releaseInput(evt:KeyboardEvent):Void // handles releases
 	{
@@ -1261,7 +1262,9 @@ class PlayState extends MusicBeatState
 			FlxG.save.data.leftBind,
 			FlxG.save.data.downBind,
 			FlxG.save.data.upBind,
-			FlxG.save.data.rightBind
+			FlxG.save.data.rightBind,
+			FlxG.save.data.strumupBind,
+			FlxG.save.data.strumdownBind
 		];
 		var altbinds:Array<String> = [
 			"LEFT",
@@ -1288,11 +1291,6 @@ class PlayState extends MusicBeatState
 		for (i in 0...binds.length) // binds
 		{
 			if (binds[i].toLowerCase() == key.toLowerCase())
-				data = i;
-		}
-		for (i in 0...altbinds.length) // binds
-		{
-			if (altbinds[i].toLowerCase() == key.toLowerCase())
 				data = i;
 		}
 
@@ -1322,7 +1320,9 @@ class PlayState extends MusicBeatState
 			FlxG.save.data.leftBind,
 			FlxG.save.data.downBind,
 			FlxG.save.data.upBind,
-			FlxG.save.data.rightBind
+			FlxG.save.data.rightBind,
+			FlxG.save.data.strumupBind,
+			FlxG.save.data.strumdownBind
 		];
 		var altbinds:Array<String> = [
 			"LEFT",
@@ -1372,8 +1372,14 @@ class PlayState extends MusicBeatState
 
 		var dataNotes = [];
 		for(i in closestNotes)
-			if (i.noteData == data)
-				dataNotes.push(i);
+			
+			if ((!SONG.forGuitar && i.noteData == data) || (SONG.forGuitar && i.noteData < 4 && data > 3)) {
+					for (eye in 0...3) {
+						if (keys[eye] == true) {
+						dataNotes.push(i);
+						}
+					}
+				};
 
 		trace("notes able to hit for " + key.toString() + " " + dataNotes.length);
 
@@ -3827,12 +3833,31 @@ class PlayState extends MusicBeatState
 	var downHold:Bool = false;
 	var rightHold:Bool = false;
 	var leftHold:Bool = false;
-
+	var strumupHold:Bool = false;
+	var strumdownHold:Bool = false;
 	// THIS FUNCTION JUST FUCKS WIT HELD NOTES AND BOTPLAY/REPLAY (also gamepad shit)
 
 private function keyShit():Void // I've invested in emma stocks
 	{
 		// control arrays, order L D R U
+				var holdArray:Array<Bool> = [controls.LEFT, controls.DOWN, controls.UP, controls.RIGHT, controls.STRUMUP, controls.STRUMDOWN];
+				var pressArray:Array<Bool> = [
+					controls.LEFT_P,
+					controls.DOWN_P,
+					controls.UP_P,
+					controls.RIGHT_P,
+					controls.STRUMUP_P,
+					controls.STRUMDOWN_P
+				];
+				var releaseArray:Array<Bool> = [
+					controls.LEFT_R,
+					controls.DOWN_R,
+					controls.UP_R,
+					controls.RIGHT_R,
+					controls.STRUMUP_R,
+					controls.STRUMDOWN_R
+				];
+		if (!SONG.forGuitar) {
 				var holdArray:Array<Bool> = [controls.LEFT, controls.DOWN, controls.UP, controls.RIGHT];
 				var pressArray:Array<Bool> = [
 					controls.LEFT_P,
@@ -3845,8 +3870,9 @@ private function keyShit():Void // I've invested in emma stocks
 					controls.DOWN_R,
 					controls.UP_R,
 					controls.RIGHT_R
-				];
-		var keynameArray:Array<String> = ['left', 'down', 'up', 'right'];
+				];		
+		}
+		var keynameArray:Array<String> = ['left', 'down', 'up', 'right', 'strumup', 'strumdown'];
 		#if cpp
 		if (luaModchart != null)
 		{
@@ -3868,14 +3894,14 @@ private function keyShit():Void // I've invested in emma stocks
 		// Prevent player input if botplay is on
 		if (PlayStateChangeables.botPlay)
 		{
-			holdArray = [false, false, false, false];
-			pressArray = [false, false, false, false];
-			releaseArray = [false, false, false, false];
+			holdArray = [false, false, false, false, false, false];
+			pressArray = [false, false, false, false, false, false];
+			releaseArray = [false, false, false, false, false, false];
 		}
 
-		var anas:Array<Ana> = [null, null, null, null];
+		var anas:Array<Ana> = [null, null, null, null, null, null];
 
-		for (i in 0...pressArray.length)
+		for (i in 0...anas.length)
 			if (pressArray[i])
 				anas[i] = new Ana(Conductor.songPosition, null, false, "miss", i);
 
@@ -3884,7 +3910,7 @@ private function keyShit():Void // I've invested in emma stocks
 		{
 			notes.forEachAlive(function(daNote:Note)
 			{
-				if (daNote.isSustainNote && daNote.canBeHit && daNote.mustPress && holdArray[daNote.noteData] && daNote.sustainActive)
+				if (daNote.isSustainNote && daNote.canBeHit && daNote.mustPress && ((!SONG.forGuitar && holdArray[daNote.noteData]) || (SONG.forGuitar && (holdArray[4] || holdArray[5]) && holdArray[daNote.noteData])) && daNote.sustainActive)
 				{
 					goodNoteHit(daNote);
 				}
@@ -3905,7 +3931,7 @@ private function keyShit():Void // I've invested in emma stocks
 
 				notes.forEachAlive(function(daNote:Note)
 				{
-					if (daNote.canBeHit && daNote.mustPress && !daNote.wasGoodHit && !directionsAccounted[daNote.noteData])
+					if (daNote.canBeHit && daNote.mustPress && !daNote.wasGoodHit && (!SONG.forGuitar && !directionsAccounted[daNote.noteData] || (SONG.forGuitar && !directionsAccounted[daNote.noteData] && !directionsAccounted[4] && !directionsAccounted[5])))
 					{
 						if (directionList.contains(daNote.noteData))
 						{
@@ -3955,28 +3981,28 @@ private function keyShit():Void // I've invested in emma stocks
 					{
 						for (shit in 0...pressArray.length)
 						{ // if a direction is hit that shouldn't be
-							if (pressArray[shit] && !directionList.contains(shit))
+							if ((!SONG.forGuitar && pressArray[shit] && !directionList.contains(shit)) || (SONG.forGuitar && (pressArray[4] || pressArray[5]) && directionList == []))
 								noteMiss(shit, null);
 						}
 					}
 					for (coolNote in possibleNotes)
 					{
-						if (pressArray[coolNote.noteData] && !hit[coolNote.noteData])
+						if ((!SONG.forGuitar && pressArray[coolNote.noteData]) || (SONG.forGuitar && holdArray[coolNote.noteData] && (pressArray[4] || pressArray[5])) && !hit[coolNote.noteData])
 						{
 							if (mashViolations != 0)
 								mashViolations--;
 							hit[coolNote.noteData] = true;
 							scoreTxt.color = FlxColor.WHITE;
 							var noteDiff:Float = -(coolNote.strumTime - Conductor.songPosition);
-							anas[coolNote.noteData].hit = true;
-							anas[coolNote.noteData].hitJudge = Ratings.judgeNote(coolNote);
-							anas[coolNote.noteData].nearestNote = [coolNote.strumTime, coolNote.noteData, coolNote.sustainLength];
+							trace("cool note data is "+coolNote.noteData);
+							trace("ana looks like "+anas);
+							anas[coolNote.noteData] = new Ana(Conductor.songPosition, [coolNote.strumTime, coolNote.noteData, coolNote.sustainLength], true, "good", coolNote.noteData);
 							goodNoteHit(coolNote);
 						}
 					}
 				};
-				
-				if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && (!holdArray.contains(true) || PlayStateChangeables.botPlay))
+				var holdGuitarless = holdArray.slice(0, 3);
+				if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && (!holdGuitarless.contains(true) || PlayStateChangeables.botPlay))
 				{
 					if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss') && (boyfriend.animation.curAnim.curFrame >= 10 || boyfriend.animation.curAnim.finished))
 						boyfriend.playAnim('idle');
@@ -3984,7 +4010,7 @@ private function keyShit():Void // I've invested in emma stocks
 				else if (!FlxG.save.data.ghost)
 				{
 					for (shit in 0...pressArray.length)
-						if (pressArray[shit])
+						if ((!SONG.forGuitar && pressArray[shit]) || (SONG.forGuitar && holdArray[shit] && (pressArray[4] || pressArray[5])))
 							noteMiss(shit, null);
 				}
 			}

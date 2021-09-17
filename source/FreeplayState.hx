@@ -1,6 +1,7 @@
 package;
 
 import flash.text.TextField;
+import flixel.input.gamepad.FlxGamepad;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
@@ -187,6 +188,19 @@ class FreeplayState extends MusicBeatState
 		var upP = controls.UP_P;
 		var downP = controls.DOWN_P;
 		var accepted = controls.ACCEPT;
+		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
+
+			if (gamepad != null)
+			{
+				if (gamepad.justPressed.DPAD_UP)
+				{
+				changeSelection(-1);
+				}
+				if (gamepad.justPressed.DPAD_DOWN)
+				{
+				changeSelection(1);
+				}
+			}
 
 		if (upP)
 		{

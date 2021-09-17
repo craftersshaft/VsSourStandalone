@@ -35,19 +35,23 @@ class KeyBindMenu extends FlxSubState
     var keyTextDisplay:FlxText;
     var keyWarning:FlxText;
     var warningTween:FlxTween;
-    var keyText:Array<String> = ["LEFT", "DOWN", "UP", "RIGHT"];
-    var defaultKeys:Array<String> = ["A", "S", "W", "D", "R"];
-    var defaultGpKeys:Array<String> = ["DPAD_LEFT", "DPAD_DOWN", "DPAD_UP", "DPAD_RIGHT"];
+    var keyText:Array<String> = ["LEFT", "DOWN", "UP", "RIGHT", "STRUMUP", "STRUMDOWN"];
+    var defaultKeys:Array<String> = ["A", "S", "W", "D", "Y", "H"];
+    var defaultGpKeys:Array<String> = ["DPAD_LEFT", "DPAD_DOWN", "DPAD_UP", "DPAD_RIGHT", "DPAD_UP", "DPAD_DOWN"];
     var curSelected:Int = 0;
 
     var keys:Array<String> = [FlxG.save.data.leftBind,
                               FlxG.save.data.downBind,
                               FlxG.save.data.upBind,
-                              FlxG.save.data.rightBind];
+                              FlxG.save.data.rightBind,
+							  FlxG.save.data.strumupBind,
+							  FlxG.save.data.strumdownBind,];
     var gpKeys:Array<String> = [FlxG.save.data.gpleftBind,
                               FlxG.save.data.gpdownBind,
                               FlxG.save.data.gpupBind,
-                              FlxG.save.data.gprightBind];
+                              FlxG.save.data.gprightBind,
+                              FlxG.save.data.gpstrumupBind,
+                              FlxG.save.data.gpstrumdownBind];
     var tempKey:String = "";
     var blacklist:Array<String> = ["ESCAPE", "ENTER", "BACKSPACE", "SPACE", "TAB"];
 
@@ -171,7 +175,7 @@ class KeyBindMenu extends FlxSubState
                         FlxG.sound.play(Paths.sound('scrollMenu'));
                         state = "input";
                     }
-                    else if(gamepad.justPressed.LEFT_TRIGGER){
+                    else if(gamepad.justPressed.LEFT_TRIGGER || FlxG.keys.justPressed.ESCAPE){
                         quit();
                     }
                     else if (gamepad.justPressed.RIGHT_TRIGGER){
@@ -257,7 +261,7 @@ class KeyBindMenu extends FlxSubState
 
         if (KeyBinds.gamepad)
         {
-            for(i in 0...4){
+            for(i in 0...6){
 
                 var textStart = (i == curSelected) ? "> " : "  ";
                 trace(gpKeys[i]);
@@ -267,10 +271,14 @@ class KeyBindMenu extends FlxSubState
         }
         else
         {
-            for(i in 0...4){
+            for(i in 0...6){
 
                 var textStart = (i == curSelected) ? "> " : "  ";
+				if (i < 4) {
                 keyTextDisplay.text += textStart + keyText[i] + ": " + ((keys[i] != keyText[i]) ? (keys[i] + " / ") : "" ) + keyText[i] + " ARROW\n";
+				} else {
+                keyTextDisplay.text += textStart + keyText[i] + ": " + ((keys[i] != keyText[i]) ? (keys[i] + " / ") : "" ) + keyText[i] + "\n";				
+				}
 
             }
         }
@@ -285,11 +293,15 @@ class KeyBindMenu extends FlxSubState
         FlxG.save.data.downBind = keys[1];
         FlxG.save.data.leftBind = keys[0];
         FlxG.save.data.rightBind = keys[3];
+		FlxG.save.data.strumupBind = keys[4];
+		FlxG.save.data.strumdownBind = keys[5];
         
         FlxG.save.data.gpupBind = gpKeys[2];
         FlxG.save.data.gpdownBind = gpKeys[1];
         FlxG.save.data.gpleftBind = gpKeys[0];
         FlxG.save.data.gprightBind = gpKeys[3];
+		FlxG.save.data.gpstrumupBind = gpKeys[4];
+		FlxG.save.data.gpstrumdownBind = gpKeys[5];		
 
         FlxG.save.flush();
 
@@ -419,9 +431,9 @@ class KeyBindMenu extends FlxSubState
     {
         curSelected += _amount;
                 
-        if (curSelected > 3)
+        if (curSelected > 5)
             curSelected = 0;
         if (curSelected < 0)
-            curSelected = 3;
+            curSelected = 5;
     }
 }

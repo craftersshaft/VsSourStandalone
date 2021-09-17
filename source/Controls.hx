@@ -32,6 +32,12 @@ enum abstract Action(String) to String from String
 	var PAUSE = "pause";
 	var RESET = "reset";
 	var CHEAT = "cheat";
+	var STRUMUP = "strumup";
+	var STRUMUP_P = "strumup-press";
+	var STRUMUP_R = "strumup-release";	
+	var STRUMDOWN = "strumdown";
+	var STRUMDOWN_P = "strumdown-press";
+	var STRUMDOWN_R = "strumdown-release";	
 }
 #else
 @:enum
@@ -54,6 +60,12 @@ abstract Action(String) to String from String
 	var PAUSE = "pause";
 	var RESET = "reset";
 	var CHEAT = "cheat";
+	var STRUMUP = "strumup";
+	var STRUMUP_P = "strumup-press";
+	var STRUMUP_R = "strumup-release";	
+	var STRUMDOWN = "strumdown";
+	var STRUMDOWN_P = "strumdown-press";
+	var STRUMDOWN_R = "strumdown-release";	
 }
 #end
 
@@ -79,6 +91,8 @@ enum Control
 	BACK;
 	PAUSE;
 	CHEAT;
+	STRUMUP;
+	STRUMDOWN;
 }
 
 enum KeyboardScheme
@@ -112,6 +126,13 @@ class Controls extends FlxActionSet
 	var _pause = new FlxActionDigital(Action.PAUSE);
 	var _reset = new FlxActionDigital(Action.RESET);
 	var _cheat = new FlxActionDigital(Action.CHEAT);
+	var _strumup = new FlxActionDigital(Action.STRUMUP);
+	var _strumupP = new FlxActionDigital(Action.STRUMUP_P);
+	var _strumupR = new FlxActionDigital(Action.STRUMUP_R);
+	var _strumdown = new FlxActionDigital(Action.STRUMDOWN);
+	var _strumdownP = new FlxActionDigital(Action.STRUMDOWN_P);
+	var _strumdownR = new FlxActionDigital(Action.STRUMDOWN_R);
+		
 
 	#if (haxe >= "4.0.0")
 	var byName:Map<String, FlxActionDigital> = [];
@@ -207,6 +228,36 @@ class Controls extends FlxActionSet
 	inline function get_CHEAT()
 		return _cheat.check();
 
+	public var STRUMDOWN(get, never):Bool;
+
+	inline function get_STRUMDOWN()
+		return _strumdown.check();
+
+	public var STRUMDOWN_P(get, never):Bool;
+
+	inline function get_STRUMDOWN_P()
+		return _strumdownP.check();
+
+	public var STRUMDOWN_R(get, never):Bool;
+
+	inline function get_STRUMDOWN_R()
+		return _strumdownR.check();
+		
+	public var STRUMUP(get, never):Bool;
+
+	inline function get_STRUMUP()
+		return _strumup.check();
+
+	public var STRUMUP_P(get, never):Bool;
+
+	inline function get_STRUMUP_P()
+		return _strumupP.check();
+
+	public var STRUMUP_R(get, never):Bool;
+
+	inline function get_STRUMUP_R()
+		return _strumupR.check();
+
 	#if (haxe >= "4.0.0")
 	public function new(name, scheme = None)
 	{
@@ -229,6 +280,12 @@ class Controls extends FlxActionSet
 		add(_pause);
 		add(_reset);
 		add(_cheat);
+		add(_strumup);
+		add(_strumupP);
+		add(_strumupR);
+		add(_strumdown);
+		add(_strumdownP);
+		add(_strumdownR);
 
 		for (action in digitalActions)
 			byName[action.name] = action;
@@ -257,6 +314,12 @@ class Controls extends FlxActionSet
 		add(_pause);
 		add(_reset);
 		add(_cheat);
+		add(_strumup);
+		add(_strumupP);
+		add(_strumupR);
+		add(_strumdown);
+		add(_strumdownP);
+		add(_strumdownR);
 
 		for (action in digitalActions)
 			byName[action.name] = action;
@@ -311,6 +374,8 @@ class Controls extends FlxActionSet
 			case PAUSE: _pause;
 			case RESET: _reset;
 			case CHEAT: _cheat;
+			case STRUMUP: _strumup;
+			case STRUMDOWN: _strumdown;
 		}
 	}
 
@@ -356,6 +421,14 @@ class Controls extends FlxActionSet
 				func(_reset, JUST_PRESSED);
 			case CHEAT:
 				func(_cheat, JUST_PRESSED);
+			case STRUMUP:
+				func(_strumup, PRESSED);
+				func(_strumupP, JUST_PRESSED);
+				func(_strumupR, JUST_RELEASED);
+			case STRUMDOWN:
+				func(_strumdown, PRESSED);
+				func(_strumdownP, JUST_PRESSED);
+				func(_strumdownR, JUST_RELEASED);
 		}
 	}
 
@@ -585,6 +658,8 @@ class Controls extends FlxActionSet
 		buttons.set(Control.ACCEPT,[FlxGamepadInputID.A]);
 		buttons.set(Control.BACK,[FlxGamepadInputID.B]);
 		buttons.set(Control.PAUSE,[FlxGamepadInputID.START]);
+		buttons.set(Control.STRUMUP,[FlxGamepadInputID.fromString(FlxG.save.data.gpstrumupBind)]);
+		buttons.set(Control.STRUMDOWN,[FlxGamepadInputID.fromString(FlxG.save.data.gpstrumdownBind)]);
 
 		addGamepad(0,buttons);
 
@@ -596,6 +671,8 @@ class Controls extends FlxActionSet
 		inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 		inline bindKeys(Control.PAUSE, [ENTER, ESCAPE]);
 		inline bindKeys(Control.RESET, [FlxKey.fromString(FlxG.save.data.killBind)]);
+		inline bindKeys(Control.STRUMUP, [FlxKey.fromString(FlxG.save.data.strumupBind)]);
+		inline bindKeys(Control.STRUMDOWN, [FlxKey.fromString(FlxG.save.data.strumdownBind)]);
 	}
 
 	function removeKeyboard()
@@ -668,7 +745,9 @@ class Controls extends FlxActionSet
 			Control.LEFT => [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT],
 			Control.RIGHT => [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT],
 			Control.PAUSE => [START],
-			Control.RESET => [Y]
+			Control.RESET => [Y],
+			Control.STRUMUP => [DPAD_UP],
+			Control.STRUMDOWN => [DPAD_DOWN]			
 		]);
 		#else
 		addGamepadLiteral(id, [

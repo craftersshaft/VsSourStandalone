@@ -202,6 +202,7 @@ class ChartingState extends MusicBeatState
 				gfVersion: 'gf',
 				noteStyle: 'normal',
 				stage: 'stage',
+				forGuitar: false,
 				speed: 1,
 				validScore: false
 			};
@@ -1015,6 +1016,16 @@ class ChartingState extends MusicBeatState
 			_song.needsVoices = check_voices.checked;
 			trace('CHECKED!');
 		};
+		
+		var isitGuitar = new FlxUICheckBox(10, 160, null, null, "For Guitar", 100);
+		isitGuitar.name = 'isitGuitar';
+		isitGuitar.checked = _song.forGuitar;
+		// _song.needsVoices = check_voices.checked;
+		isitGuitar.callback = function()
+		{
+			_song.forGuitar = isitGuitar.checked;
+			trace('CHECK GUITARED!' + _song.forGuitar);
+		};
 
 		var saveButton:FlxButton = new FlxButton(110, 8, "Save", function()
 		{
@@ -1143,6 +1154,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(UI_songTitle);
 		tab_group_song.add(restart);
 		tab_group_song.add(check_voices);
+		tab_group_song.add(isitGuitar);
 		//tab_group_song.add(check_mute_inst);
 		tab_group_song.add(saveButton);
 		tab_group_song.add(reloadSong);
@@ -2480,6 +2492,7 @@ class ChartingState extends MusicBeatState
 			lastSection = curSection;
 
 			PlayState.SONG = _song;
+			trace(_song.forGuitar);
 			FlxG.sound.music.stop();
 			if (!PlayState.isSM)
 			vocals.stop();

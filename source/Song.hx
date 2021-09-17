@@ -39,6 +39,7 @@ typedef SwagSong =
 	var noteStyle:String;
 	var stage:String;
 	var validScore:Bool;
+	var forGuitar:Bool;
 }
 
 class Song
@@ -57,6 +58,7 @@ class Song
 	public var gfVersion:String = '';
 	public var noteStyle:String = '';
 	public var stage:String = '';
+	public var forGuitar:Bool = false;
 
 	public function new(song, notes, bpm)
 	{
@@ -144,8 +146,7 @@ class Song
 			song.noteStyle = "normal";
 
 		if (song.gfVersion == null)
-			song.gfVersion = "gf";
-		
+			song.gfVersion = "gf";	
 
 		TimingStruct.clearTimings();
         
