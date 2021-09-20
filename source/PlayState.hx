@@ -1809,6 +1809,8 @@ class PlayState extends MusicBeatState
 			{
 				noteTypeCheck = SONG.noteStyle;
 			}
+			
+
 
 			switch (noteTypeCheck)
 			{
@@ -3548,7 +3550,12 @@ class PlayState extends MusicBeatState
 				score = -300;
 				combo = 0;
 				misses++;
+				if (SONG.forGuitar) { //giving guitars a fighting chance
+				health -= 0.08;
+				}
+				else {
 				health -= 0.1;
+				}
 				ss = false;
 				shits++;
 				if (FlxG.save.data.accuracyMod == 0)
@@ -3556,7 +3563,12 @@ class PlayState extends MusicBeatState
 			case 'bad':
 				daRating = 'bad';
 				score = 0;
+				if (SONG.forGuitar) { //giving guitars a fighting chance
+				health -= 0.04;
+				}
+				else {
 				health -= 0.06;
+				}
 				ss = false;
 				bads++;
 				if (FlxG.save.data.accuracyMod == 0)
@@ -3565,12 +3577,19 @@ class PlayState extends MusicBeatState
 				daRating = 'good';
 				score = 200;
 				ss = false;
+				if (SONG.forGuitar) { //giving guitars a fighting chance
+				health += 0.04;
+				}
 				goods++;
 				if (FlxG.save.data.accuracyMod == 0)
 					totalNotesHit += 0.75;
 			case 'sick':
-				if (health < 2)
+				if (health < 2) {
 					health += 0.04;
+					}
+				if (SONG.forGuitar) { //giving guitars a fighting chance
+				health += 0.1;
+				}
 				if (FlxG.save.data.accuracyMod == 0)
 					totalNotesHit += 1;
 				sicks++;
@@ -3604,7 +3623,7 @@ class PlayState extends MusicBeatState
 				pixelShitPart2 = '-pixel';
 				pixelShitPart3 = 'week6';
 			}
-
+			
 			rating.loadGraphic(Paths.image(pixelShitPart1 + daRating + pixelShitPart2, pixelShitPart3));
 			rating.screenCenter();
 			rating.y -= 50;
@@ -3996,7 +4015,7 @@ private function keyShit():Void // I've invested in emma stocks
 							var noteDiff:Float = -(coolNote.strumTime - Conductor.songPosition);
 							trace("cool note data is "+coolNote.noteData);
 							trace("ana looks like "+anas);
-							anas[coolNote.noteData] = new Ana(Conductor.songPosition, [coolNote.strumTime, coolNote.noteData, coolNote.sustainLength], true, "good", coolNote.noteData);
+							anas[coolNote.noteData] = new Ana(Conductor.songPosition, [coolNote.strumTime, coolNote.noteData, coolNote.sustainLength], true, Ratings.judgeNote(coolNote), coolNote.noteData);
 							goodNoteHit(coolNote);
 						}
 					}

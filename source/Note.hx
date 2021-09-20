@@ -142,6 +142,9 @@ class Note extends FlxSprite
 			if (PlayState.SONG.noteStyle == null) {
 				switch(PlayState.storyWeek) {case 6: noteTypeCheck = 'pixel';}
 			} else {noteTypeCheck = PlayState.SONG.noteStyle;}
+			if (PlayState.SONG.noteStyle == 'normal' && PlayState.SONG.forGuitar) {
+			noteTypeCheck = 'guitar';
+			}
 			
 			switch (noteTypeCheck)
 			{
@@ -184,6 +187,20 @@ class Note extends FlxSprite
 				}
 				antialiasing = false;
 				updateHitbox();
+				case 'guitar':
+					frames = Paths.getSparrowAtlas('GUITARNOTE_assets');
+
+					for (i in 0...4)
+					{
+						animation.addByPrefix(dataColor[i] + 'Scroll', dataColor[i] + ' alone'); // Normal notes
+						animation.addByPrefix(dataColor[i] + 'hold', dataColor[i] + ' hold'); // Hold
+						animation.addByPrefix(dataColor[i] + 'holdend', dataColor[i] + ' tail'); // Tails
+					}
+
+					setGraphicSize(Std.int(width * 0.7));
+					updateHitbox();
+					
+					antialiasing = FlxG.save.data.antialiasing;
 				default:
 					frames = Paths.getSparrowAtlas('NOTE_assets');
 
