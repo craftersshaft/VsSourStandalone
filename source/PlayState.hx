@@ -1374,7 +1374,7 @@ class PlayState extends MusicBeatState
 		for(i in closestNotes)
 			
 			if ((!SONG.forGuitar && i.noteData == data) || (SONG.forGuitar && i.noteData < 4 && data > 3)) {
-					for (eye in 0...3) {
+					for (eye in 0...4) {
 						if (keys[eye] == true) {
 						dataNotes.push(i);
 						}
